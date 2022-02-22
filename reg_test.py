@@ -2,6 +2,7 @@
 # 1. delete spaces and tabs
 # 2. minus pow -2 
 # 3. в регэксе есть еденичная \d* возможно лучше поставить \d+
+# 4. init main
 
 import re
 
