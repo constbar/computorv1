@@ -3,6 +3,8 @@
 # 2. minus pow -2 
 # 3. в регэксе есть еденичная \d* возможно лучше поставить \d+
 # 4. init main
+# 5 could solve only quadratic polynomial
+
 
 import re
 
