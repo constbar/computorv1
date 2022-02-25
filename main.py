@@ -8,9 +8,12 @@
 # esli otvet celoe chislo -> vivod lkak int
 # rename na compv1 not main.py
 # проверка на несколько xXxxXXXxx
+# flag full shows all strings -v 'x^2  + 2 = 0' - dima expample
+# make my sum function
 
 import re
 import sys
+from my_math import Equation
 from termcolor import colored
 
 
@@ -18,7 +21,7 @@ class Comp:
     ERR_DICT = {
         1: 'equation should have only one equal sign',
         2: 'both sides of the equation must be',
-        3: 'expression must have a integer exponent',
+        3: 'expression musst have a integer exponent',
         4: 'expression must have a non-negative exponent',
         5: 'equation could not be solved, invalid syntax'
         # 5: 'expression must have a valid exponent [0, 1, 2]',
@@ -44,13 +47,9 @@ class Comp:
         print(self.cin)
 
         self.raw_lists = self.sort_variables
-        # print(self.raw_lists)
-        self.xyz = self.convert_variables
-        print(self.xyz)
-        # print(self.xyz)
-        # print(self.lx0)
-        # print(self.lx1)
-        # print(self.lx2)
+        print(self.raw_lists)
+
+        self.eq = Equation(self.convert_variables)
 
         # simple reduced form
         # bonus reduced form
@@ -76,17 +75,22 @@ class Comp:
         self.error_func(2) if not all(self.cin.split('=')) else None
         self.error_func(3) if re.findall(self.REG_FLT_EXP, self.cin) else None
         self.error_func(4) if re.findall(self.REG_NEG_EXP, self.cin) else None
-        # проверка на слова и буквы, по регексу должны быть только числа хХ или знаки
+        # 1. проверка на слова и буквы, по регексу должны быть только числа хХ или знаки
         # сотальное на выход сделать эту проверку вообще первым делом
-        # //
-        # in other time -> shold show first polynom that doesnt match
+        # 
+        # 2. in other time -> shold show first polynom that doesnt match
         # self.error_func(5) if re.findall(self.REG_HIGH_EXPONENT, self.cin) else None
 
     @property
     def sort_variables(self) -> tuple:
         left_part, right_part = self.cin.split('=')
-        # print(type(left_part))
-        # proverka na to chto 2 storoni equals !
+
+        # 1. proverka na to chto 2 storoni equals !
+        # sdelat' func проверяющая что обе части равны между собой
+        # это может начаинаться как функция мейк клиар варс только без
+        # переноса все в одну часть с минусом.
+
+        # 2. потом проверка что полином больше 2х
 
         def make_clear_vars(reg: str, l_part: str, r_part: str) -> tuple:
             ret_list = list()
@@ -121,8 +125,12 @@ class Comp:
             if exponent == 0:
             	return sum(map(float, (i.replace('*x', '') for i in fin_list)))
             return sum(map(float, (i.replace('*x', '').replace('x', '') for i in fin_list)))
-        total = [get_sum(self.raw_lists[i], i) for i in range(len(self.raw_lists))]
-        return (total)
+        total = tuple(get_sum(self.raw_lists[i], i) for i in range(len(self.raw_lists)))
+        return total
+
+
+
+
 
     def finall_output():
         pass
@@ -145,7 +153,8 @@ class Comp:
 # e = Comp('5 * X^0 +4 * X^ 1 - 9.3 * X^2 = 1 * x^0')
 # e = Comp('5* x^0 + 4 * x^1 = 4* x^0')
 # e = Comp('8 * X^0 - 6 * X^1 + 0 * X^2 - 5.6 * X^3 = 3 * X^0')
-e = Comp('5 + 4 * X + X^2= X^2')
+# e = Comp('5 + 4 * X + X^2= X^2')
+e = Comp('3X^2= 2x')
 
 # check list
 # 5 * X^0 = 5 * X^0
