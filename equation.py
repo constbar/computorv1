@@ -1,6 +1,9 @@
 # make __str__ dang method withc will show all a_B_c values for full version of ./script
 # test return values by mypy??
 # try catch 0
+# send thru show_int
+from termcolor import colored
+
 
 class Eq:
     def __init__(self, clear_data: tuple):
@@ -21,9 +24,7 @@ class Eq:
             # return self.calc_linear_func
         else:
             print('no real solutions')
-            return
-            # no real solutions
-        #   return calc_const_function()
+            return # smth
 
     @property
     def calc_quadratic_func(self) -> tuple or float:
@@ -51,6 +52,37 @@ class Eq:
             print('disc is lower than 0. no solutions')
             return
 
+    def show_result(self, raw: list) -> None: # raw list ne nuzhen
+        print()
+        flag = 1
+        # write here original formula
+        shw_a = Eq.show_int(self.a)
+        shw_b = Eq.show_int(self.b)
+        shw_c = Eq.show_int(self.c)
+
+        str_a = f'- {shw_a * -1}' if self.a < 0 else f'+ {shw_a}'
+        str_b = f'- {shw_b * -1}' if self.b < 0 else f'+ {shw_b}'
+        str_c = f'- {shw_c * -1}' if self.c < 0 else f'+ {shw_c}'
+
+        # if polnim degree = 2 
+        red_form = f'{str_c} * X ^ 0 {str_b} * X ^ 1 {str_a} * X^2 = 0'
+        red_form = red_form[2:] if red_form[0] == '+' else red_form
+        print(colored(f'reduced form: {red_form}', 'green'))
+        print(colored(f'polynomial degree: {self.pol_dgr}', 'green'))
+        print('polynomial formula: a*x² + b*x + c = 0')                 # if flag
+        print(colored(f'in our equation: a = {shw_a}; b = {shw_b}; c = {shw_c}', 'green'))
+        print(f'discriminant formula: d = b² - 4*a*c')
+        print(colored(f'in our equation: d = {shw_b}² - 4*{shw_a}*{shw_c}', 'green'))
+        print(colored(f'discriminant is {self.disc}', 'green'))
+
+        DDISCR IS LOW 0
+
+
+
+
+
+
+
     def make_power(num, power) -> float or int:  # int?
         if power == 0:
             return 1.0
@@ -63,7 +95,8 @@ class Eq:
             fin_sqrt = (n / temp + temp) / 2
         return fin_sqrt
 
-    def print_int(digit) -> float or int:
+    def show_int(digit) -> float or int:
         # if -
+        # if 0 return zero bez tochki
         is_int = digit % int(digit) == 0
         return int(digit) if is_int else digit

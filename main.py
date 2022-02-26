@@ -1,11 +1,12 @@
-
+#!/usr/bin/python3
 
 from computorv1 import Comp
 
-e = Comp('x^4 + 4X^3 + 20x^3 + 1= 1 + 20x^3 + 4X^3')
-
-
-
+# e = Comp('x^4 + 4X^3 + 20x^3 + 1= 1 + 20x^3 + 4X^3')
+# e = Comp('x^3 + 1 = x^3 + 1')
+# e = Comp('22x^2 + 123 -1 = 22x^2 - 1')
+# e = Comp('0x^2 + 4x - 2 = 0')
+e = Comp('22x^2 + 4x + x  + 2 = 0 + x^2')
 
 
 

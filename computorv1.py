@@ -1,15 +1,13 @@
 #!/usr/bin/python3
 
-# степень не омжет быть с - или дробным числом
-# if no right or no left -> part shold not be empty
 # if empty input -> can arg parse work with it
 # manage delenie na 0
 # esli otvet celoe chislo -> vivod lkak int
-# rename na compv1 not main.py
-# проверка на несколько xXxxXXXxx
 # flag full shows all strings -v 'x^2  + 2 = 0' - dima expample
-# make my sum function
+# make my_sum function
 # можно по параметру сделать точность по заяпятой - если хочешь округление до 6 - пиши 6 или 7
+# прокомментить все функции
+# change chmod here
 
 import re
 import sys
@@ -23,17 +21,13 @@ class Comp:
         2: 'both sides of the equation must be',
         3: 'expression musst have a integer exponent',
         4: 'expression must have a non-negative exponent',
-        5: 'expression can only have allowed syntax'
-
-        # : 'equation could not be solved, invalid syntax'
-        # 5: 'expression must have a valid exponent [0, 1, 2]',
+        5: 'expression can only have allowed syntax' # проверить вывод из сабжа
     }
 
     REG_NEG_EXP = r'[xX]\^(?:(?:-\d))'
     REG_FLT_EXP = r'[xX]\^(?:(?:\d*\.))'
     REG_WRG_INP = r'[^xX\d*\d*\.\d*\^\=\*\-\+]'
     REG_HGH_EXP = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^(?:[3-9]|\d{2,})'
-    # REG_HGH_EXP = r'[xX]\^(?:(?:\d{2,})|(?:[3-9]))'
 
     REG_00_POL = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^0'
     REG_01_POL = r'[-+]?(?:(?:\d*\.\d*)|(?:\d+))'
@@ -49,8 +43,13 @@ class Comp:
         self.raw_lists = self.sort_variables
         print(f'raw list: {self.raw_lists}')
 
-        self.eq = Eq(self.convert_variables)
+        self.eq = Eq(self.convert_variables(self.raw_lists))
 
+        self.eq.show_result(self.raw_lists) # and send teur or false
+
+        # print(self.eq.__str__())
+        # print(self.eq.__repr__())
+        # self.finall_output = []
         # simple reduced form
         # bonus reduced form
 
@@ -68,33 +67,40 @@ class Comp:
         self.error_func(5) if re.findall(self.REG_WRG_INP, self.cin) else None
         self.error_func(5) if 'xx' in self.cin.lower() else None
 
-        # 2. in other time -> shold show first polynom that doesnt match
-        # self.error_func(5) if re.findall(self.REG_HIGH_EXPONENT, self.cin) else None
-
     @property
     def sort_variables(self) -> tuple:
+        '''
+        1. 
+        '''
         left_part, right_part = self.cin.split('=')
 
-        # 2. потом проверка что полином больше 2х
-        def check_equal_sides(ch_left: str, ch_right: str):  # ->            
+        def check_equal_sides(ch_left: str, ch_right: str):  # ->
             reg_list = [self.REG_HGH_EXP, self.REG_2_POLY,
                         self.REG_00_POL, self.REG_1_POLY, self.REG_01_POL]
             left_list = list()
             right_list = list()
-
             for i in reg_list:
                 left_list.extend(re.findall(i, ch_left))
                 ch_left = re.sub(i, '', ch_left)
                 right_list.extend(re.findall(i, ch_right))
                 ch_right = re.sub(i, '', ch_right)
-            
-            print(left_list)
-            print(right_list)
+            left_list = sorted(i.lower().replace('+', '') for i in left_list)
+            right_list = sorted(i.lower().replace('+', '') for i in right_list)
+            return left_list == right_list
 
-
-            sys.exit() #
-
-        check_equal_sides(left_part, right_part)
+        high_exp = re.findall(self.REG_HGH_EXP, left_part + '+' + right_part)
+        if check_equal_sides(left_part, right_part) and not 'x' in left_part.lower():
+            print('its not an equation. correct equality. no solution')
+            sys.exit(22)
+        elif check_equal_sides(left_part, right_part):
+            # Comp.finall_output()
+            print('all real numbers are solutions')
+            sys.exit(23)
+        elif high_exp:
+            high_vals = [i.replace('^', '') for i in re.findall(
+                r'\^(?:[3-9]|\d{2,})', ''.join(high_exp))]
+            print(f"programm doesnt handle {', '.join(high_vals)} exponent")
+            sys.exit(24)
 
         def make_clear_vars(reg: str, l_part: str, r_part: str) -> tuple:
             ret_list = list()
@@ -116,25 +122,25 @@ class Comp:
             self.REG_1_POLY, left_part, right_part)
         tmp_lst, left_part, right_part = make_clear_vars(
             self.REG_01_POL, left_part, right_part)
-        #
+
         self.error_func(5) if len(left_part) != 0 or len(
             right_part) != 0 else None
         list_x0.extend(tmp_lst)
         return (list_x0, list_x1, list_x2)
 
-    @property
-    def convert_variables(self) -> tuple:
+    @staticmethod
+    def convert_variables(conv_list: tuple) -> tuple:
         def get_sum(exp_list: list, exponent: int) -> float:
             fin_list = [i.replace('X', 'x').replace(f'^{exponent}', '') for i in exp_list]
-            fin_list = ['1' if i == 'x' else '-1' if i ==
-                        '-x' else i for i in fin_list]
+            fin_list = ['1' if i == 'x' else '-1' if i == '-x' else i for i in fin_list]
             return sum(map(float, (i.replace('*x', '').replace('x', '') for i in fin_list)))
-        total = tuple(get_sum(self.raw_lists[i], i)
-                      for i in range(len(self.raw_lists)))
+
+        total = tuple(get_sum(conv_list[i], i) for i in range(len(conv_list)))
         return total
 
-    def finall_output():
-        pass
+    # def finall_output():
+    #     print('all real numbers are solutions')
+    #     sys.exit(123)
 
     @classmethod
     def error_func(cls, num_err) -> None:
