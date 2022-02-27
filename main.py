@@ -1,14 +1,20 @@
 #!/usr/bin/python3
 
 from computorv1 import Comp
+# e = Comp('-333 -22x^2 + x^2 - X^7 + x^4 + 4X^3 + 20x^3 + 1 - x^5=  4X^2')
+# e = Comp('8 * X^0 - 6 * X^1 + 0 * X^2 - 5.6 * X^3 = 3 * X^0')
+# e = Comp('42x^2 + x^2+ 1=1+ 42x^2') # disc is 0
+# e = Comp('2=1')
 
-# e = Comp('x^4 + 4X^3 + 20x^3 + 1= 1 + 20x^3 + 4X^3')
+# e = Comp('5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0')
 # e = Comp('x^3 + 1 = x^3 + 1')
 # e = Comp('22x^2 + 123 -1 = 22x^2 - 1')
 # e = Comp('0x^2 + 4x - 2 = 0')
-e = Comp('22x^2 + 4x + x  + 2 = 0 + x^2')
+# e = Comp('5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0')
 
-
+# e = Comp('x + 23 = 0') #
+# e = Comp('x^2 + 4x + x  + 2 = 0 + x^2') # DIVISION ERROr
+e = Comp('3x^2 + 4x + x  + 2 = 0')
 
 
 # e = Comp('+3x^2 + 	3x^2-3x^2  -4x + 22.21 =  =')
@@ -21,8 +27,8 @@ e = Comp('22x^2 + 4x + x  + 2 = 0 + x^2')
 # subj
 # e = Comp('5 * X^0 +4 * X^ 1 - 9.3 * X^2 = 1 * x^0')
 # e = Comp('5* x^0 + 4 * x^1 = 4* x^0')
-# e = Comp('8 * X^0 - 6 * X^1 + 0 * X^2 - 5.6 * X^3 = 3 * X^0')
-# e = Comp('5 + 4 * X + X^2= X^2')
+# e = Coif num_err == 6:mp('8 * X^0 - 6 * X^1 + 0 * X^2 - 5.6 * X^3 = 3 * X^0')
+# e = Comp('5 + 4 * X + X^2= X^2')f'
 # e = Comp('3X^2= 2x')
 # e = Comp('2X^2= x + 3') # good. celie chisla
 # e = Comp('2X^2 - 123x = x + 41')
