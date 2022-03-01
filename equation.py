@@ -115,7 +115,8 @@ class Eq:
                 print('discriminant is strictly positive, the two solutions are:')
                 # [print(colored(str(Eq.make_round(i, prec)), 'green')) for i in self.results]
                 [print(colored(str(format(i, f'.{prec}f')), 'green')) for i in self.results]
-                print(self.results) !!!!
+                # if ne float make dtrobi
+                # print(self.results) !!!!
                 # esli celoe chislo to ego ne nado delat' drob'u
                 # if flag == 1
                 # make abs here / for 1 line of code

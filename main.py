@@ -14,7 +14,7 @@ from computorv1 import Comp
 
 # e = Comp('x + 23 = 0') #
 # e = Comp('x^2 + 4x + x  + 2 = 0 + x^2') # DIVISION ERROr
-e = Comp('3x^2 + 4x + x  + 2 = 0')
+e = Comp('-x - 3X^20-3x^4 + 2x^2 + 9x^54 + 4x^1 - 32x^7 + x + 2x  + 2 = 0 -4 - 13x^23')
 
 
 # e = Comp('+3x^2 + 	3x^2-3x^2  -4x + 22.21 =  =')

@@ -6,6 +6,7 @@
 # прокомментить все функции
 # change chmod here
 # ubrat' vse prints
+# 3x^+4 - postavit' reg ex na esli ne chislo posle ^
 
 import re
 import sys
@@ -17,7 +18,7 @@ class Comp:
     ERR_DICT = {
         1: 'equation should have only one equal sign',
         2: 'both sides of the equation must be',
-        3: 'expression musst have a integer exponent',
+        3: 'expression must have an integer exponent',
         4: 'expression must have a non-negative exponent',
         5: 'expression can only have allowed syntax',
         6: 'its just a numerical equation. no solution',
@@ -29,7 +30,9 @@ class Comp:
     REG_NEG_EXP = r'[xX]\^(?:(?:-\d))'
     REG_FLT_EXP = r'[xX]\^(?:(?:\d*\.))'
     REG_WRG_INP = r'[^xX\d*\d*\.\d*\^\=\*\-\+]'
-    REG_HGH_EXP = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^(?:[3-9]|\d{2,})'
+    # REG_HGH_EXP = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^(?:[3-9]|\d{2,})'
+    REG_HGH_EXP = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^(?:(?:\d{2,})|(?:[3-9]))'
+
     REG_00_POL = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^0'
     REG_01_POL = r'[-+]?(?:(?:\d*\.\d*)|(?:\d+))'
     REG_1_POLY = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX](?:\^1)?'
@@ -44,6 +47,7 @@ class Comp:
         self.raw_lists = self.sort_variables
         # print(f'raw list: {self.raw_lists}')
 
+        # here we should send clear vars
         self.eq = Eq(self.convert_variables(self.raw_lists))
 
         # and send teur or false for extend flag
@@ -61,89 +65,109 @@ class Comp:
         1. 
         '''
         left_part, right_part = self.cin.split('=')
+        left_dict = dict()
+        right_dict = dict()
+        pos_exps = [int(i.split('^')[-1]) for i in
+                    re.findall(self.REG_HGH_EXP, self.cin)]
+        print(pos_exps)
+        def handle_exps(left_input: str, right_input: str):  # -> #
+            for i in pos_exps:
+                reg_pos = rf'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^{i}'
+                left_dict[i] = re.findall(reg_pos, left_input)
+                left_input = re.sub(reg_pos, '', left_input)
+                right_dict[i] = re.findall(reg_pos, right_input)
+                right_input = re.sub(reg_pos, '', right_input)
 
-        def check_equal_sides(ch_left: str, ch_right: str):  # ->
-            reg_list = [self.REG_HGH_EXP, self.REG_2_POLY,
-                        self.REG_00_POL, self.REG_1_POLY, self.REG_01_POL]
-            left_list = list()
-            right_list = list()
-            for i in reg_list:
-                left_list.extend(re.findall(i, ch_left))
-                ch_left = re.sub(i, '', ch_left)
-                right_list.extend(re.findall(i, ch_right))
-                ch_right = re.sub(i, '', ch_right)
-            left_list = sorted(i.lower().replace('+', '') for i in left_list)
-            right_list = sorted(i.lower().replace('+', '') for i in right_list)
-            return left_list == right_list
+            reg_list = [(2, self.REG_2_POLY), (0, self.REG_00_POL),
+                        (1, self.REG_1_POLY), (0, self.REG_01_POL)]
+            for e, r in reg_list:
+                if e in left_dict:
+                    left_dict[e].extend(re.findall(r, left_input))
+                else:
+                    left_dict[e] = re.findall(r, left_input)
+                if e in right_dict:
+                    right_dict[e].extend(re.findall(r, right_input))
+                else:
+                    right_dict[e] = re.findall(r, right_input)
+                left_input = re.sub(r, '', left_input)
+                right_input = re.sub(r, '', right_input)
+            return left_input, right_input
 
-        # high_exp = re.findall(self.REG_HGH_EXP, left_part + '+' + right_part)
-        equal_sides = check_equal_sides(left_part, right_part)        
+        left_part, right_part = handle_exps(left_part, right_part)
+        print(left_part, right_part)
+        print(colored(left_dict, 'cyan'))
+        print(colored(right_dict, 'red'))
 
+        if len(left_part) != 0 or len(right_part) != 0:
+            self.end_eq(5)
+
+        def clear_vars(l_part: dict, r_part: dict) -> None:
+            for k in {**l_part, **r_part}.keys():
+                l_part[k] = [i.split('^')[0].lower() if '^' in i else i for i in l_part[k]]
+                l_part[k] = [i.strip('+') for i in l_part[k]]
+                l_part[k] = ['1' if i == 'x' else '-1' if i == '-x' else i for i in l_part[k]]
+                l_part[k] = sum(float(i.strip('x')) for i in l_part[k])
+
+                r_part[k] = [i.split('^')[0].lower() if '^' in i else i for i in r_part[k]]
+                r_part[k] = [i.strip('+') for i in r_part[k]]
+                r_part[k] = ['1' if i == 'x' else '-1' if i == '-x' else i for i in r_part[k]]
+                r_part[k] = -1 * sum(float(i.strip('x')) for i in r_part[k])
+
+
+        # Sravnenie dictov
+        # esli tol'ko ^0 -> else sfjskadfjsdklfj
+        # left_part, right_part = handle_exps(left_part, right_part) # check if equals
+        clear_vars(left_dict, right_dict)
+        print(left_dict)
+        print(right_dict)
+
+        sys.exit(3)
+        # check here
         if equal_sides and not 'x' in self.cin.lower():
-            self.end_eq(6)
+            self.end_eq(6) # просто поставить сис эксит
         elif 'x' not in self.cin.lower():
             self.end_eq(7)
         elif equal_sides:
             self.end_eq(8)
-
-        def make_clear_vars(reg: str, l_part: str, r_part: str) -> tuple:
-            ret_list = list()
-            ret_list.extend(re.findall(reg, l_part))
-            l_part = re.sub(reg, '', l_part)
-
-            ret_list = [i.replace('+', '') for i in ret_list]
-            temp = ['-' + i for i in re.findall(reg, r_part)]
-            ret_list.extend([i.replace('-+', '-').replace('--', '') for i in temp])
-            r_part = re.sub(reg, '', r_part)
-            return (ret_list, l_part, r_part)
-
-        high_exp_list, left_part, right_part = make_clear_vars(
-            self.REG_HGH_EXP, left_part, right_part)        
-        list_high = list()
-        if high_exp_list:
-            high_str = '+'.join(high_exp_list).replace('+-', '-')
-            high_str = '+' + high_str if high_str[0] != '-' else high_str
-            max_exp = max(list(set(i.split('^')[-1] for i in high_exp_list)))
-            for i in range(3, int(max_exp) + 1):
-                reg_inc = rf'[-]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^{i}'
-                list_high.append(re.findall(reg_inc, high_str))
-                high_str = re.sub(reg_inc, '', high_str)
-
-        list_x2, left_part, right_part = make_clear_vars(
-            self.REG_2_POLY, left_part, right_part)
-        list_x0, left_part, right_part = make_clear_vars(
-            self.REG_00_POL, left_part, right_part)
-        list_x1, left_part, right_part = make_clear_vars(
-            self.REG_1_POLY, left_part, right_part)
-        tmp_lst, left_part, right_part = make_clear_vars(
-            self.REG_01_POL, left_part, right_part)
-        self.end_eq(5) if len(left_part) != 0 or len(
-            right_part) != 0 else None
-        list_x0.extend(tmp_lst)
-
+        # return dict
         return (list_x0, list_x1, list_x2) + tuple(list_high)
 
+
+    # need i this method?
     @staticmethod
     def convert_variables(conv_list: tuple) -> tuple:
         def get_sum(exp_list: list, exponent: int) -> float:
-            fin_list = [i.replace('X', 'x').replace(f'^{exponent}', '') for i in exp_list] # make lower()
+            # make lower()
+            fin_list = [i.replace('X', 'x').replace(f'^{exponent}', '') for i in exp_list]
             fin_list = ['1' if i == 'x' else '-1' if i == '-x' else i for i in fin_list]
             return sum(map(float, (i.replace('*x', '').replace('x', '') for i in fin_list)))
 
         total = tuple(get_sum(conv_list[i], i) for i in range(len(conv_list)))
         return total
 
-    def check_input(self) -> None:
-        self.end_eq(1) if self.cin.count('=') != 1 else None
-        self.end_eq(2) if not all(self.cin.split('=')) else None
-        self.end_eq(3) if re.findall(self.REG_FLT_EXP, self.cin) else None
-        self.end_eq(4) if re.findall(self.REG_NEG_EXP, self.cin) else None
-        self.end_eq(5) if re.findall(self.REG_WRG_INP, self.cin) else None
-        self.end_eq(5) if 'xx' in self.cin.lower() else None
+    def check_input(self) -> None: # rename check errors
+        if self.cin.count('=') != 1:
+            sys.exit(self.ERR_DICT[1])
+        elif not all(self.cin.split('=')):
+            sys.exit(self.ERR_DICT[2])
+        elif re.findall(self.REG_FLT_EXP, self.cin):
+            sys.exit(self.ERR_DICT[3])
+        elif re.findall(self.REG_NEG_EXP, self.cin):
+            sys.exit(self.ERR_DICT[4])
+        elif re.findall(self.REG_WRG_INP, self.cin):
+            sys.exit(self.ERR_DICT[5])
+        elif 'xx' in self.cin.lower():
+            sys.exit(self.ERR_DICT[5])
+
+        # self.end_eq(2) if not all(self.cin.split('=')) else None
+        # self.end_eq(3) if re.findall(self.REG_FLT_EXP, self.cin) else None
+        # self.end_eq(4) if re.findall(self.REG_NEG_EXP, self.cin) else None
+        # self.end_eq(5) if re.findall(self.REG_WRG_INP, self.cin) else None
+        # self.end_eq(5) if 'xx' in self.cin.lower() else None
 
     @classmethod
-    def end_eq(cls, num_err: int, err_msg: str=None) -> None:
+    def end_eq(cls, num_err: int, err_msg: str = None) -> None:
         print(cls.ERR_DICT[num_err])
-        if num_err == 9:
-            print(f'the program doesnt handle {err_msg} exponent')
-        sys.exit(num_err)
+        # if num_err == 9:
+            # print(f'the program doesnt handle {err_msg} exponent')
+        # sys.exit(num_err)
