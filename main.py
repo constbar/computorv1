@@ -4,7 +4,11 @@ from computorv1 import Comp
 # e = Comp('-333 -22x^2 + x^2 - X^7 + x^4 + 4X^3 + 20x^3 + 1 - x^5=  4X^2')
 # e = Comp('8 * X^0 - 6 * X^1 + 0 * X^2 - 5.6 * X^3 = 3 * X^0')
 # e = Comp('42x^2 + x^2+ 1=1+ 42x^2') # disc is 0
+# e = Comp('42x^2 + x^2+ 1=1+ 42x^2') # disc is 0
 # e = Comp('2=1')
+# e = Comp('5 * X^2 = 1 * X^0') # disc = 0
+e = Comp('6 * X^0 + 11 * X^1 + 5 * X^2 = 1 * X^0 + 1 * X^1') # disc = 0
+# e = Comp('x2 - 6x + 9 = 0') # disc = 0
 
 # e = Comp('5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0')
 # e = Comp('x^3 + 1 = x^3 + 1')
@@ -14,7 +18,12 @@ from computorv1 import Comp
 
 # e = Comp('x + 23 = 0') #
 # e = Comp('x^2 + 4x + x  + 2 = 0 + x^2') # DIVISION ERROr
-e = Comp('-x - 3X^20-3x^4 + 2x^2 + 9x^54 + 4x^1 - 32x^7 + x + 2x  + 2 = 0 -4 - 13x^23')
+# e = Comp('-x - 3X^20-3x^4 + 2x^2 + 9x^54 + 4x^1 - 32x^7 + x + 2x  + 2 = 0 -4 - 13x^23')
+
+# e = Comp('8x + 2x = 8')
+
+# e = Comp('+ 3.2x^2-4.3+1 + x^99= 2x+4x^123 + 1x^99')
+# e = Comp('13x^23 + 1 = 1 + 13*x^23')
 
 
 # e = Comp('+3x^2 + 	3x^2-3x^2  -4x + 22.21 =  =')
@@ -42,7 +51,7 @@ e = Comp('-x - 3X^20-3x^4 + 2x^2 + 9x^54 + 4x^1 - 32x^7 + x + 2x  + 2 = 0 -4 - 1
 # 2 * X^0 = 8 * X^0
 # 5 * X^0 = 4 * X^0 + 7 * X^1
 # 5 * X^0 + 13 * X^1 + 3 * X^2 = 1 * X^0 + 1 * X^1
-# 6 * X^0 + 11 * X^1 + 5 * X^2 = 1 * X^0 + 1 * X^1 # disc = 0
+# e = Comp('6 * X^0 + 11 * X^1 + 5 * X^2 = 1 * X^0 + 1 * X^1') # disc = 0
 # 5 * X^0 + 3 * X^1 + 3 * X^2 = 1 * X^0 + 0 * X^1 # neg disc
 
 # my test
