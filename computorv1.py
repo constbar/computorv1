@@ -6,7 +6,6 @@
 # прокомментить все функции
 # change chmod here
 # сделать все анотация и протестировать
-# x2 - 6x + 9 = 0' x^2 только : после х и нчиего больше
 
 import re
 import sys
@@ -26,7 +25,7 @@ class Comp:
         8: 'each real number is a solution',
         9: 'the polynomial degree is strictly greater than 2' # 9ki net
     }
-
+    REG_AFTER_X = r'([xX][^\^\-\+\=])'
     REG_NEG_EXP = r'[xX]\^(?:(?:-\d))'
     REG_FLT_EXP = r'[xX]\^(?:(?:\d*\.))'
     REG_WRG_INP = r'[^xX\d*\d*\.\d*\^\=\*\-\+]'
@@ -41,10 +40,10 @@ class Comp:
         self.orig = equation
         self.cin = self.cutted_input
         self.check_errors()
-        print(self.cin)
+        # print(self.cin)
 
         self.clean_data = self.sort_variables
-        print(self.clean_data)
+        # print(self.clean_data)
         self.eq = Eq(self.clean_data)
 
         # and send teur or false for extend flag
@@ -114,8 +113,8 @@ class Comp:
             sys.exit(self.ERR_DICT[7])
         elif equal_sides:
             sys.exit(self.ERR_DICT[8])
-        print(colored(left_dict, 'red'))
-        print(colored(right_dict, 'cyan'))
+        # print(colored(left_dict, 'red'))
+        # print(colored(right_dict, 'cyan'))
         return {key: left_dict.get(key, 0) - right_dict.get(key, 0) 
             for key in set(left_dict) | set(right_dict)}
 
@@ -129,6 +128,10 @@ class Comp:
         elif re.findall(self.REG_NEG_EXP, self.cin):
             sys.exit(self.ERR_DICT[4])
         elif re.findall(self.REG_WRG_INP, self.cin):
+            sys.exit(self.ERR_DICT[5])
+        elif re.findall(self.REG_AFTER_X, self.cin):
+            sys.exit(self.ERR_DICT[5])
+        elif re.findall(r'\^[\D]', self.cin):
             sys.exit(self.ERR_DICT[5])
         elif 'xx' in self.cin.lower():
             sys.exit(self.ERR_DICT[5])
