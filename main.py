@@ -6,12 +6,14 @@ from computorv1 import Comp
 # e = Comp('42x^2 + x^2+ 1=1+ 42x^2') # disc is 0
 # e = Comp('42x^2 + x^2+ 1=1+ 42x^2') # disc is 0
 # e = Comp('2=1')
-# e = Comp('5 * X^2 = 1 * X^0') # disc = 0
+# e = Comp('5 * X^2 = 1 * X^0')
 # e = Comp('6 * X^0 + 11 * X^1 + 5 * X^2 = 1 * X^0 + 1 * X^1') # disc = 0
-e = Comp('2x^2 - 3x -22= 0') # disc = 0
+# e = Comp('2x^2 - 3x -22= 0') # disc = 0
 # e = Comp('2x^2 - 3x + 1 = 0') # disc = 0
+# e = Comp('2x^2 -22x - 1 = 0') # disc = 0
 # e = Comp('3x^2 - 6x + 1 = 0') # disc = 0
-# +-
+# e = Comp('2x^2 - 13x + 1 = 0') # alarm
+e = Comp('123123123123x + 1231231 = 0') # wrong
 
 # e = Comp('5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0')
 # e = Comp('x^3 + 1 = x^3 + 1')

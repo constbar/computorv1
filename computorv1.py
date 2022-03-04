@@ -6,6 +6,7 @@
 # прокомментить все функции
 # change chmod here
 # сделать все анотация и протестировать
+# add to its apostrof
 
 import re
 import sys
