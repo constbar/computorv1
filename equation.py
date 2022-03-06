@@ -1,7 +1,4 @@
-# test return values by mypy?? check in properties getters -> None by mypy
-
 import sys
-import calculation
 from termcolor import colored
 
 
@@ -22,7 +19,7 @@ class Eq:
         self.print_final_result()
 
     @property
-    def check_high_poly(self):
+    def check_high_poly(self) -> bool:
         h_vals = list(filter(lambda i: i > 2, self.data.keys()))
         for v in h_vals:
             if self.data[v]:
@@ -43,7 +40,7 @@ class Eq:
 
     def print_final_result(self) -> None:
         max_len_of_input = max(map(len, map(str,
-                                            map(int, (self.data.values())))))
+            map(int, (self.data.values())))))
         if max_len_of_input > self.prec:
             self.prec = max_len_of_input
 
@@ -80,9 +77,8 @@ class Eq:
                       colored(f'd = ({self.i_data[1]})² - '
                               f'4*{self.i_data[2]}*'
                               f'{self.i_data[0]}', 'green'))
-
-            print('discriminant:',
-                  colored(f'{Eq.try_int(self.disc)}', 'green'))
+                print('discriminant:',
+                    colored(f'{Eq.try_int(self.disc)}', 'green'))
 
             if self.disc < 0:
                 sys.exit('discriminant less than zero. no solution')
@@ -95,7 +91,7 @@ class Eq:
             elif self.disc == 0 and self.verb:
                 print('solutions formula: (-b) / (2*a)')
                 print('in our equation: ',
-                      colored(f'(-({self.i_data[1]})  / '
+                      colored(f'(-({self.i_data[1]}) / '
                               f'(2*{self.i_data[2]})', 'green'))
 
         if self.disc is not None and self.disc != 0:
@@ -128,13 +124,13 @@ class Eq:
                 if i < 0:
                     i *= -1
                     sign = '-'
-                print(colored(sign + Eq.make_fraction(i, 
-                    int(f"1{self.prec * '0'}")), 'green'))
+                print(colored(sign + Eq.make_fraction(i, int(f"1{self.prec * '0'}")),
+                              'green'))
 
-    def make_calculations(self):  # -> tuple or float
-        '''
+    def make_calculations(self) -> None:
+        """
         defines the degree of a polynomial
-        '''
+        """
         if self.pol_dgr == 2:
             self.calc_quadratic_func()
         elif self.pol_dgr == 1:
@@ -144,20 +140,20 @@ class Eq:
             self.print_final_result()
 
     def calc_quadratic_func(self) -> None:
-        '''
+        """
         if disc == 0 -> eq has 1 solution
         if disc > 1 -> eq has 2 solutions
         if disc < 0 -> eq has no solution
-        all solutions added to self.results
-        '''
+        all solutions add to self results
+        """
         self.disc = Eq.make_power(self.data[1], 2) - \
             4 * self.data[2] * self.data[0]
         if self.disc == 0:
             self.results.append((-1.0 * self.data[1]) /
                                 (2 * self.data[2]))
         elif self.disc > 0:
-            def find_solutions(type) -> float:
-                sign = 1.0 if type == '+' else -1.0
+            def find_solutions(sign_type) -> float:
+                sign = 1.0 if sign_type == '+' else -1.0
                 numerator = -1 * self.data[1] + sign * \
                     Eq.make_sqrt(self.disc)
                 denominator = 2 * self.data[2]
@@ -168,19 +164,22 @@ class Eq:
         else:
             self.print_final_result()
 
-    def make_power(number, power) -> float or int:  # int?
+    @staticmethod
+    def make_power(number, power):
         if power == 0:
             return 1.0
         return number * Eq.make_power(number, power - 1)
 
-    def make_sqrt(n, temp=0.0) -> float or int:
+    @staticmethod
+    def make_sqrt(n, temp=0.0):
         fin_sqrt = n / 2
         while fin_sqrt != temp:
             temp = fin_sqrt
             fin_sqrt = (n / temp + temp) / 2
         return fin_sqrt
 
-    def try_int(digit) -> float or int:
+    @staticmethod
+    def try_int(digit):
         if digit == 0:
             return 0
         if -1 < digit < 1:
@@ -191,12 +190,13 @@ class Eq:
             sys.exit('number is too big. number should not be inf')
         return int(digit) if is_int else digit
 
+    @staticmethod
     def make_round(number, decimal=0):
-        # if int -> return
         return (int(Eq.make_power(10, decimal) * number - 0.5) + 1) / \
             Eq.make_power(10, decimal)
 
-    def gcd(a, b) -> int:
+    @staticmethod
+    def gcd(a, b):
         if a == 0:
             return b
         elif b == 0:
@@ -206,7 +206,8 @@ class Eq:
         else:
             return Eq.gcd(b, a % b)
 
-    def make_fraction(number, prec=1000000000) -> str:
+    @staticmethod
+    def make_fraction(number, prec=1000000000):
         if number == 0:
             return '0'
         int_val = int(number)

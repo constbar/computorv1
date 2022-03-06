@@ -32,18 +32,18 @@ equations = [
     '22x^2 + 123 -1 = 22x^2 - 1', 'X^2 + 16 = 0',
     '2.2x^2 - 3.3x^1 - 22.2 = 0',  '7*X^0=7*X^0',
     'X - X = 00000000000000000003', '^2 + X = 0',
-    '1 * X  + 2 * X^1 + X - X = 3', 'x + 23 = 0',
     '5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0', '=',
     '+3x^2 + 3x^2-3x^2  - 4x + 22.21 =  ', '4x = 1',
+    '1 * X  + 2 * X^1 + X - X = 3', 'x + 23 = 0', '',
     '22x^2 + 33.2x + 1.213 = 3x^2 + 32', '1 * X = 3',
     '+3x^2 + 3x^2-3x^2.2 - 4x + 22 = 123', '4x = 12',
     '+3x^2 + 3x^2-3x^-2 - 4x + 22.21 = 2', '10 = 10',
     '+3x^2 + 3x^2-3x^2 - 4x + 22.21 =  =', 'X^2 = 0',
     '+ 3.2x^2 - 4.3 + 1 + x^99= 2x + 4x^123 + 1x^99',
+    '+3x^25 + 3x^2 - 3x^22 -4x + 22.21 = 3', '2 = 1',
     '+3x^2 + 3x^2-3x^2 - 4x + 22.21 = 2', 'X + 1 = 0',
     '5 * X^0 + 3 * X^1 + 3 * X^2 = 1 * X^0 + 0 * X^1',
     '5 * X^0 + 4 * X^1 - 9.443 * X^2 = 1 * X^0 - 312',
-    '+3x^25 + 3x^2-3x^22 -4x + 22.21 = 3', '2 = 1', '',
     '6 * X^0 + 11 * X^1 + 5 * X^2 = 1 * X^0 + 1 * X^1',
     '5 * X^0 + 13 * X^1 + 3 * X^2 = 1 * X^0 + 1 * X^1',
     '6 * X^0 + 11 * X^1 + 5 * X^2 = 1 * X^0 + 1 * X^1',
@@ -63,8 +63,13 @@ equations = [
 ]
 
 if __name__ == '__main__':
-    # for i in range(len(equations)):
-    l = randint(0, len(equations))
-    print('original equation:', colored(equations[l], 'cyan'))
-    os.system(f"python3 computorv1.py '{equations[l]}' -f ")
-    time.sleep(1)
+    for i in range(len(equations)):
+        print('original equation:', colored(equations[i], 'cyan'))
+        os.system(f"python3 computorv1.py '{equations[i]}' -f ")
+        print()
+        time.sleep(3)
+
+    # l = randint(0, len(equations))
+    # print('original equation:', colored(equations[l], 'cyan'))
+    # os.system(f"python3 computorv1.py '{equations[l]}' -f ")
+    # time.sleep(1)

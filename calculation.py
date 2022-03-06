@@ -1,13 +1,8 @@
 #!/usr/bin/python3
 
-# if empty input -> can arg parse work with it
-# прокомментить все функции
-# pep8
-
 import re
 import sys
 from equation import Eq
-from termcolor import colored
 
 
 class Calc:
@@ -48,17 +43,17 @@ class Calc:
 
     @property
     def sort_variables(self) -> dict:
-        '''
+        """
         1. distribution of all raw data by powers
         2. cleaning, leaving only vals by degrees
-        '''
+        """
         left_part, right_part = self.cin.split('=')
         left_dict = dict()
         right_dict = dict()
         pos_exps = list(set(int(i.split('^')[-1]) for i in
                             re.findall(self.REG_HGH_EXP, self.cin)))
 
-        def handle_exps(left_input: str, right_input: str):  # -> #
+        def handle_exps(left_input: str, right_input: str) -> tuple:
             for i in pos_exps:
                 reg_pos = rf'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^{i}'
                 left_dict[i] = re.findall(reg_pos, left_input)
@@ -94,7 +89,6 @@ class Calc:
                              '-x' else i for i in l_part[k]]
                 l_part[k] = sum(float(i.replace('*', '').replace('x', ''))
                                 for i in l_part[k])
-                # l_part[k] = sum(float(i.lower().replace('*', '').replace('x', '')) for i in l_part[k])
 
                 r_part[k] = [i.split('^')[0].lower()
                              if '^' in i else i for i in r_part[k]]
@@ -109,7 +103,7 @@ class Calc:
         except ValueError:
             sys.exit(self.ERR_DICT[5])
         equal_sides = left_dict == right_dict
-        if equal_sides and not 'x' in self.cin.lower():
+        if equal_sides and 'x' not in self.cin.lower():
             sys.exit(self.ERR_DICT[6])
         elif 'x' not in self.cin.lower():
             sys.exit(self.ERR_DICT[7])
