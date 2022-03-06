@@ -22,12 +22,12 @@ class Eq:
         self.print_final_result()
 
     @property
-    def  check_high_poly(self):
+    def check_high_poly(self):
         h_vals = list(filter(lambda i: i > 2, self.data.keys()))
         for v in h_vals:
-             if self.data[v]:
+            if self.data[v]:
                 return True
-        return False    
+        return False
 
     @property
     def try_int_data(self) -> dict:
@@ -105,10 +105,11 @@ class Eq:
 
         for i in self.results:
             if isinstance(Eq.try_int(i), float):
-                print(colored(format(i, f'.{self.prec}f').rstrip('0'), 'green'))
+                print(colored(format(i, f'.{self.prec}f').rstrip('0'),
+                              'green'))
             elif 'e+' in str(i):
                 print(colored(i, 'green'))
-            else:    
+            else:
                 print(colored(Eq.try_int(i), 'green'))
 
         if self.frac or self.verb:
@@ -127,9 +128,13 @@ class Eq:
                 if i < 0:
                     i *= -1
                     sign = '-'
-                print(colored(sign + Eq.make_fraction(i, int(f"1{self.prec * '0'}")), 'green'))
+                print(colored(sign + Eq.make_fraction(i, 
+                    int(f"1{self.prec * '0'}")), 'green'))
 
     def make_calculations(self):  # -> tuple or float
+        '''
+        defines the degree of a polynomial
+        '''
         if self.pol_dgr == 2:
             self.calc_quadratic_func()
         elif self.pol_dgr == 1:
@@ -141,8 +146,8 @@ class Eq:
     def calc_quadratic_func(self) -> None:
         '''
         if disc == 0 -> eq has 1 solution
-        -- '' --
-
+        if disc > 1 -> eq has 2 solutions
+        if disc < 0 -> eq has no solution
         all solutions added to self.results
         '''
         self.disc = Eq.make_power(self.data[1], 2) - \

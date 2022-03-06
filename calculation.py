@@ -49,13 +49,14 @@ class Calc:
     @property
     def sort_variables(self) -> dict:
         '''
-        1. 
+        1. distribution of all raw data by powers
+        2. cleaning, leaving only vals by degrees
         '''
         left_part, right_part = self.cin.split('=')
         left_dict = dict()
         right_dict = dict()
         pos_exps = list(set(int(i.split('^')[-1]) for i in
-            re.findall(self.REG_HGH_EXP, self.cin)))
+                            re.findall(self.REG_HGH_EXP, self.cin)))
 
         def handle_exps(left_input: str, right_input: str):  # -> #
             for i in pos_exps:
@@ -86,16 +87,22 @@ class Calc:
 
         def clear_vars(l_part: dict, r_part: dict) -> None:
             for k in {**l_part, **r_part}.keys():
-                l_part[k] = [i.split('^')[0].lower() if '^' in i else i for i in l_part[k]]
+                l_part[k] = [i.split('^')[0].lower()
+                             if '^' in i else i for i in l_part[k]]
                 l_part[k] = [i.lower().replace('+', '') for i in l_part[k]]
-                l_part[k] = ['1' if i == 'x' else '-1' if i == '-x' else i for i in l_part[k]]
-                l_part[k] = sum(float(i.replace('*', '').replace('x', '')) for i in l_part[k])
+                l_part[k] = ['1' if i == 'x' else '-1' if i ==
+                             '-x' else i for i in l_part[k]]
+                l_part[k] = sum(float(i.replace('*', '').replace('x', ''))
+                                for i in l_part[k])
                 # l_part[k] = sum(float(i.lower().replace('*', '').replace('x', '')) for i in l_part[k])
 
-                r_part[k] = [i.split('^')[0].lower() if '^' in i else i for i in r_part[k]]
+                r_part[k] = [i.split('^')[0].lower()
+                             if '^' in i else i for i in r_part[k]]
                 r_part[k] = [i.lower().replace('+', '') for i in r_part[k]]
-                r_part[k] = ['1' if i == 'x' else '-1' if i == '-x' else i for i in r_part[k]]
-                r_part[k] = sum(float(i.replace('*', '').replace('x', '')) for i in r_part[k])
+                r_part[k] = ['1' if i == 'x' else '-1' if i ==
+                             '-x' else i for i in r_part[k]]
+                r_part[k] = sum(float(i.replace('*', '').replace('x', ''))
+                                for i in r_part[k])
 
         try:
             clear_vars(left_dict, right_dict)
@@ -108,8 +115,8 @@ class Calc:
             sys.exit(self.ERR_DICT[7])
         elif equal_sides:
             sys.exit(self.ERR_DICT[8])
-        return {key: left_dict.get(key, 0) - right_dict.get(key, 0) 
-            for key in set(left_dict) | set(right_dict)}
+        return {key: left_dict.get(key, 0) - right_dict.get(key, 0)
+                for key in set(left_dict) | set(right_dict)}
 
     def check_errors(self) -> None:
         if self.cin.count('=') != 1:
