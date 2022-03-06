@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 # if empty input -> can arg parse work with it
-# можно по параметру сделать точность по заяпятой - если хочешь округление до 6 - пиши 6 или 7
 # прокомментить все функции
+# pep8
 
 import re
 import sys
@@ -21,6 +21,7 @@ class Calc:
         7: 'it\'s an incorrect numerical equation. no solution',
         8: 'each real number is a solution',
     }
+
     REG_AFTER_X = r'([xX][^\^\-\+\=])'
     REG_NEG_EXP = r'[xX]\^(?:(?:-\d))'
     REG_FLT_EXP = r'[xX]\^(?:(?:\d*\.))'
@@ -32,13 +33,12 @@ class Calc:
     REG_1_POLY = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX](?:\^1)?'
     REG_2_POLY = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^2'
 
-    def __init__(self, equation: str, extend_param=None):
+    def __init__(self, equation: str, prec, frac=False, verb=False):
         self.orig = equation
         self.cin = self.cutted_input
         self.check_errors()
-
         self.clean_data = self.sort_variables
-        self.eq = Eq(self.clean_data)
+        self.eq = Eq(self.clean_data, prec, frac, verb)
 
     @property
     def cutted_input(self) -> str:
@@ -87,17 +87,20 @@ class Calc:
         def clear_vars(l_part: dict, r_part: dict) -> None:
             for k in {**l_part, **r_part}.keys():
                 l_part[k] = [i.split('^')[0].lower() if '^' in i else i for i in l_part[k]]
-                l_part[k] = [i.strip('+') for i in l_part[k]]
+                l_part[k] = [i.lower().replace('+', '') for i in l_part[k]]
                 l_part[k] = ['1' if i == 'x' else '-1' if i == '-x' else i for i in l_part[k]]
-                l_part[k] = sum(float(i.lower().replace('*', '').replace('x', '')) for i in l_part[k])
+                l_part[k] = sum(float(i.replace('*', '').replace('x', '')) for i in l_part[k])
+                # l_part[k] = sum(float(i.lower().replace('*', '').replace('x', '')) for i in l_part[k])
 
                 r_part[k] = [i.split('^')[0].lower() if '^' in i else i for i in r_part[k]]
-                r_part[k] = [i.strip('+') for i in r_part[k]]
+                r_part[k] = [i.lower().replace('+', '') for i in r_part[k]]
                 r_part[k] = ['1' if i == 'x' else '-1' if i == '-x' else i for i in r_part[k]]
-                r_part[k] = sum(float(i.lower().replace('*', '').replace('x', '')) for i in r_part[k])
+                r_part[k] = sum(float(i.replace('*', '').replace('x', '')) for i in r_part[k])
 
-
-        clear_vars(left_dict, right_dict)
+        try:
+            clear_vars(left_dict, right_dict)
+        except ValueError:
+            sys.exit(self.ERR_DICT[5])
         equal_sides = left_dict == right_dict
         if equal_sides and not 'x' in self.cin.lower():
             sys.exit(self.ERR_DICT[6])

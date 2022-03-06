@@ -1,8 +1,4 @@
-# test return values by mypy??
-# check in properties getters -> None by mypy
-# return after getting results?
-# prec не может быть отрицательным
-# сделать все анотация и протестировать
+# test return values by mypy?? check in properties getters -> None by mypy
 
 import sys
 import calculation
@@ -10,16 +6,28 @@ from termcolor import colored
 
 
 class Eq:
-    def __init__(self, data: dict):
+    def __init__(self, data: dict, prec: int, frac: bool, verb: bool):
         self.data = data
+        self.prec = prec
+        self.frac = frac
+        self.verb = verb
         self.disc = None
         self.results = list()
         self.i_data = self.try_int_data
         self.pol_dgr = self.get_poly_degree
         if len(self.data) > 3:
-            self.print_final_result()
+            if self.check_high_poly:
+                self.print_final_result()
         self.make_calculations()
         self.print_final_result()
+
+    @property
+    def  check_high_poly(self):
+        h_vals = list(filter(lambda i: i > 2, self.data.keys()))
+        for v in h_vals:
+             if self.data[v]:
+                return True
+        return False    
 
     @property
     def try_int_data(self) -> dict:
@@ -34,14 +42,10 @@ class Eq:
         return degree
 
     def print_final_result(self) -> None:
-        # make flag of prec
-        prec = 4
         max_len_of_input = max(map(len, map(str,
                                             map(int, (self.data.values())))))
-        if max_len_of_input > prec:
-            prec = max_len_of_input
-
-        flag = 1  # flag of full showing of all features
+        if max_len_of_input > self.prec:
+            self.prec = max_len_of_input
 
         red_form = ''
         for i in self.data.keys():
@@ -53,76 +57,77 @@ class Eq:
         print('reduced form:', colored(red_form, 'green'))
         print('polynomial degree:', colored(f'{self.pol_dgr}', 'green'))
 
-        if len(self.data) > 3:
+        if self.check_high_poly:
             sys.exit(f'the polynomial degree is strictly'
                      f' greater than 2. couldn\'t be solved')
         elif self.pol_dgr == 0:
             sys.exit('no solution')
-        elif self.pol_dgr == 1:
+        elif self.pol_dgr == 1 and self.verb:
             print('linear formula: b*x + c = 0')
             print('in our equation:',
                   colored(f'b = {self.i_data[1]}; '
                           f'c = {self.i_data[0]}', 'green'))
-        elif self.pol_dgr == 2:  # and flag is == 1
-            # if flag
-            print('quadratic equation formula: a*x² + b*x + c = 0')
-            print('in our equation: ',
-                  colored(f'a = {self.i_data[2]}; '
-                          f'b = {self.i_data[1]}; '
-                          f'c = {self.i_data[0]}', 'green'))
+        elif self.pol_dgr == 2:
+            if self.verb:
+                print('quadratic equation formula: a*x² + b*x + c = 0')
+                print('in our equation: ',
+                      colored(f'a = {self.i_data[2]}; '
+                              f'b = {self.i_data[1]}; '
+                              f'c = {self.i_data[0]}', 'green'))
 
-            print('discriminant formula: d = b² - 4*a*c')
-            print('in our equation: ',
-                  colored(f'd = ({self.i_data[1]})² - '
-                          f'4*{self.i_data[2]}*'
-                          f'{self.i_data[0]}', 'green'))
+                print('discriminant formula: d = b² - 4*a*c')
+                print('in our equation: ',
+                      colored(f'd = ({self.i_data[1]})² - '
+                              f'4*{self.i_data[2]}*'
+                              f'{self.i_data[0]}', 'green'))
 
             print('discriminant:',
                   colored(f'{Eq.try_int(self.disc)}', 'green'))
 
             if self.disc < 0:
                 sys.exit('discriminant less than zero. no solution')
-            elif self.disc > 0:
-                print('solutions formula: (-b ± √d) / (2*a)')  # if flag
+            elif self.disc > 0 and self.verb:
+                print('solutions formula: (-b ± √d) / (2*a)')
                 print('in our equation: ',
                       colored(f'(-({self.i_data[1]}) ± '
                               f'√{Eq.try_int(self.disc)}) / '
                               f'(2*{self.i_data[2]})', 'green'))
-            elif self.disc == 0:
-                print('solutions formula: (-b) / (2*a)')  # if flag
+            elif self.disc == 0 and self.verb:
+                print('solutions formula: (-b) / (2*a)')
                 print('in our equation: ',
                       colored(f'(-({self.i_data[1]})  / '
                               f'(2*{self.i_data[2]})', 'green'))
 
-        if self.disc is not None and self.disc != 0:  # need i != 0?
+        if self.disc is not None and self.disc != 0:
             print('discriminant is strictly positive, the two solutions are:')
         else:
             print('the solution is:')
 
-        for i in self.results:  # here i will need str format for int and float
+        for i in self.results:
             if isinstance(Eq.try_int(i), float):
-                # print(i)
-                print(colored(format(i, f'.{prec}f').rstrip('0'), 'green'))
-            else:
+                print(colored(format(i, f'.{self.prec}f').rstrip('0'), 'green'))
+            elif 'e+' in str(i):
+                print(colored(i, 'green'))
+            else:    
                 print(colored(Eq.try_int(i), 'green'))
-        # if flag
 
-        print('solutions in irreducible fraction:')
-        for i in self.results:  # 1 / 10000000 ???
-            sign = ''
-            try:
-                if i % int(i) == 0:
-                    print(colored((str(int(i)) + (prec * '0')) + '/' +
-                                  ('1' + prec * '0'), 'green'))
-                    continue
-            except ZeroDivisionError:
-                if i == 0:
-                    print(colored('0', 'green'))
-                    continue
-            if i < 0:
-                i *= -1
-                sign = '-'
-            print(colored(sign + Eq.make_fraction(i, int(f"1{prec * '0'}")), 'green'))
+        if self.frac or self.verb:
+            print('solutions in irreducible fraction:')
+            for i in self.results:
+                sign = ''
+                try:
+                    if i % int(i) == 0:
+                        print(colored((str(int(i)) + (self.prec * '0')) + '/' +
+                                      ('1' + self.prec * '0'), 'green'))
+                        continue
+                except ZeroDivisionError:
+                    if i == 0:
+                        print(colored('0', 'green'))
+                        continue
+                if i < 0:
+                    i *= -1
+                    sign = '-'
+                print(colored(sign + Eq.make_fraction(i, int(f"1{self.prec * '0'}")), 'green'))
 
     def make_calculations(self):  # -> tuple or float
         if self.pol_dgr == 2:
@@ -175,7 +180,10 @@ class Eq:
             return 0
         if -1 < digit < 1:
             return digit
-        is_int = digit % int(digit) == 0
+        try:
+            is_int = digit % int(digit) == 0
+        except OverflowError:
+            sys.exit('number is too big. number should not be inf')
         return int(digit) if is_int else digit
 
     def make_round(number, decimal=0):
