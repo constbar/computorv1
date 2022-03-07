@@ -10,18 +10,18 @@ if __name__ == '__main__':
     parser.add_argument('equation',
                         type=str,
                         metavar='',
-                        help='equation to solve')
+                        help='polynom to process')
     parser.add_argument('-p', '--prec',
                         type=int,
                         metavar='',
                         required=False,
-                        help='precision of a solution')
+                        help='set the accuracy of the solution')
     parser.add_argument('-f', '--frac',
                         action='store_true',
-                        help='irreducible fraction display')
+                        help='show irreducible fraction')
     parser.add_argument('-v', '--verb',
                         action='store_true',
-                        help='verbose display')
+                        help='show detail operations')
     args = parser.parse_args()
 
     if args.prec is None:
