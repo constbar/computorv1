@@ -2,7 +2,7 @@
 
 project of École 42 where it is necessary to make an equation solving program. the program that accepts polynomials of the second degree and gives answers.
 
-<!-- # ![video](mini.png) -->
+# ![](comp1.gif)
 
 ### how to use
 ```

@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import os
-import time
 from random import randint
 from calculation import Calc
 from termcolor import colored
@@ -66,4 +65,3 @@ if __name__ == '__main__':
     r = randint(0, len(equations))
     print('original equation:', colored(equations[r], 'cyan'))
     os.system(f"python3 computor.py '{equations[r]}' -v ")
-    time.sleep(1)
