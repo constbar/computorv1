@@ -6,7 +6,6 @@ project of École 42 where it is necessary to make an equation solving program. 
 
 ### how to use
 ```
-make
 python3 computor.py <polynomial>
 ```
 optional arguments:
