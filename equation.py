@@ -1,4 +1,5 @@
 import sys
+
 from termcolor import colored
 
 
@@ -10,8 +11,6 @@ class Eq:
         self.verb = verb
         self.disc = None
         self.results = list()
-        self.i_data = self.try_int_data
-        self.pol_dgr = self.get_poly_degree
         if len(self.data) > 3:
             if self.check_high_poly:
                 self.print_final_result()
@@ -31,7 +30,7 @@ class Eq:
         return {k: Eq.try_int(v) for k, v in self.data.items()}
 
     @property
-    def get_poly_degree(self) -> int:
+    def poly_degree(self) -> int:
         degree = 0
         for k, v in self.data.items():
             if v and degree < k:
@@ -39,8 +38,8 @@ class Eq:
         return degree
 
     def print_final_result(self) -> None:
-        max_len_of_input = max(map(len, map(str,
-            map(int, (self.data.values())))))
+        max_len_of_input = max(map(len, map(
+            str, map(int, (self.data.values())))))
         if max_len_of_input > self.prec:
             self.prec = max_len_of_input
 
@@ -52,47 +51,47 @@ class Eq:
         red_form = red_form[:-2] + '= 0'
 
         print('reduced form:', colored(red_form, 'green'))
-        print('polynomial degree:', colored(f'{self.pol_dgr}', 'green'))
+        print('polynomial degree:', colored(f'{self.poly_degree}', 'green'))
 
         if self.check_high_poly:
             sys.exit(f'the polynomial degree is strictly'
                      f' greater than 2. couldn\'t be solved')
-        elif self.pol_dgr == 0:
+        elif self.poly_degree == 0:
             sys.exit('no solution')
-        elif self.pol_dgr == 1 and self.verb:
+        elif self.poly_degree == 1 and self.verb:
             print('linear formula: b*x + c = 0')
             print('in our equation:',
-                  colored(f'b = {self.i_data[1]}; '
-                          f'c = {self.i_data[0]}', 'green'))
-        elif self.pol_dgr == 2:
+                  colored(f'b = {self.try_int_data[1]}; '
+                          f'c = {self.try_int_data[0]}', 'green'))
+        elif self.poly_degree == 2:
             if self.verb:
                 print('quadratic equation formula: a*x² + b*x + c = 0')
                 print('in our equation: ',
-                      colored(f'a = {self.i_data[2]}; '
-                              f'b = {self.i_data[1]}; '
-                              f'c = {self.i_data[0]}', 'green'))
+                      colored(f'a = {self.try_int_data[2]}; '
+                              f'b = {self.try_int_data[1]}; '
+                              f'c = {self.try_int_data[0]}', 'green'))
 
                 print('discriminant formula: d = b² - 4*a*c')
                 print('in our equation: ',
-                      colored(f'd = ({self.i_data[1]})² - '
-                              f'4*{self.i_data[2]}*'
-                              f'{self.i_data[0]}', 'green'))
+                      colored(f'd = ({self.try_int_data[1]})² - '
+                              f'4*{self.try_int_data[2]}*'
+                              f'{self.try_int_data[0]}', 'green'))
                 print('discriminant:',
-                    colored(f'{Eq.try_int(self.disc)}', 'green'))
+                      colored(f'{Eq.try_int(self.disc)}', 'green'))
 
             if self.disc < 0:
                 sys.exit('discriminant less than zero. no solution')
             elif self.disc > 0 and self.verb:
                 print('solutions formula: (-b ± √d) / (2*a)')
                 print('in our equation: ',
-                      colored(f'(-({self.i_data[1]}) ± '
+                      colored(f'(-({self.try_int_data[1]}) ± '
                               f'√{Eq.try_int(self.disc)}) / '
-                              f'(2*{self.i_data[2]})', 'green'))
+                              f'(2*{self.try_int_data[2]})', 'green'))
             elif self.disc == 0 and self.verb:
                 print('solutions formula: (-b) / (2*a)')
                 print('in our equation: ',
-                      colored(f'(-({self.i_data[1]}) / '
-                              f'(2*{self.i_data[2]})', 'green'))
+                      colored(f'(-({self.try_int_data[1]}) / '
+                              f'(2*{self.try_int_data[2]})', 'green'))
 
         if self.disc is not None and self.disc != 0:
             print('discriminant is strictly positive, the two solutions are:')
@@ -131,9 +130,9 @@ class Eq:
         """
         defines the degree of a polynomial
         """
-        if self.pol_dgr == 2:
+        if self.poly_degree == 2:
             self.calc_quadratic_func()
-        elif self.pol_dgr == 1:
+        elif self.poly_degree == 1:
             self.results.append(-1.0 * self.data[0] /
                                 self.data[1])
         else:
@@ -152,7 +151,7 @@ class Eq:
             self.results.append((-1.0 * self.data[1]) /
                                 (2 * self.data[2]))
         elif self.disc > 0:
-            def find_solutions(sign_type) -> float:
+            def find_solutions(sign_type: str) -> float:
                 sign = 1.0 if sign_type == '+' else -1.0
                 numerator = -1 * self.data[1] + sign * \
                     Eq.make_sqrt(self.disc)
@@ -165,13 +164,13 @@ class Eq:
             self.print_final_result()
 
     @staticmethod
-    def make_power(number, power):
+    def make_power(number: float, power: int) -> int | float:
         if power == 0:
             return 1.0
         return number * Eq.make_power(number, power - 1)
 
     @staticmethod
-    def make_sqrt(n, temp=0.0):
+    def make_sqrt(n: float, temp: float = 0.0) -> float:
         fin_sqrt = n / 2
         while fin_sqrt != temp:
             temp = fin_sqrt
@@ -179,7 +178,7 @@ class Eq:
         return fin_sqrt
 
     @staticmethod
-    def try_int(digit):
+    def try_int(digit: float) -> int | float | str:
         if digit == 0:
             return 0
         if -1 < digit < 1:
@@ -191,12 +190,12 @@ class Eq:
         return int(digit) if is_int else digit
 
     @staticmethod
-    def make_round(number, decimal=0):
+    def make_round(number: int | float, decimal: int = 0) -> int | float:
         return (int(Eq.make_power(10, decimal) * number - 0.5) + 1) / \
             Eq.make_power(10, decimal)
 
     @staticmethod
-    def gcd(a, b):
+    def gcd(a: int | float, b: int | float) -> int | float:
         if a == 0:
             return b
         elif b == 0:
@@ -207,7 +206,7 @@ class Eq:
             return Eq.gcd(b, a % b)
 
     @staticmethod
-    def make_fraction(number, prec=1000000000):
+    def make_fraction(number: float, prec: int = 1000000000) -> str:
         if number == 0:
             return '0'
         int_val = int(number)

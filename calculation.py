@@ -2,6 +2,7 @@
 
 import re
 import sys
+
 from equation import Eq
 
 
@@ -28,15 +29,13 @@ class Calc:
     REG_1_POLY = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX](?:\^1)?'
     REG_2_POLY = r'[-+]?(?:(?:\d*)|(?:\d*\.\d*))\*?[xX]\^2'
 
-    def __init__(self, equation: str, prec, frac=False, verb=False):
+    def __init__(self, equation: str, prec: int, frac: bool = False, verb: bool = False):
         self.orig = equation
-        self.cin = self.cutted_input
         self.check_errors()
-        self.clean_data = self.sort_variables
-        self.eq = Eq(self.clean_data, prec, frac, verb)
+        self.eq = Eq(self.sort_variables, prec, frac, verb)
 
     @property
-    def cutted_input(self) -> str:
+    def cut_input(self) -> str:
         cut_inp = self.orig
         cut_inp = cut_inp.replace('\t', '').replace(' ', '')
         return cut_inp
@@ -47,11 +46,11 @@ class Calc:
         1. distribution of all raw data by powers
         2. cleaning, leaving only vals by degrees
         """
-        left_part, right_part = self.cin.split('=')
+        left_part, right_part = self.cut_input.split('=')
         left_dict = dict()
         right_dict = dict()
         pos_exps = list(set(int(i.split('^')[-1]) for i in
-                            re.findall(self.REG_HGH_EXP, self.cin)))
+                            re.findall(self.REG_HGH_EXP, self.cut_input)))
 
         def handle_exps(left_input: str, right_input: str) -> tuple:
             for i in pos_exps:
@@ -82,30 +81,24 @@ class Calc:
 
         def clear_vars(l_part: dict, r_part: dict) -> None:
             for k in {**l_part, **r_part}.keys():
-                l_part[k] = [i.split('^')[0].lower()
-                             if '^' in i else i for i in l_part[k]]
+                l_part[k] = [i.split('^')[0].lower() if '^' in i else i for i in l_part[k]]
                 l_part[k] = [i.lower().replace('+', '') for i in l_part[k]]
-                l_part[k] = ['1' if i == 'x' else '-1' if i ==
-                             '-x' else i for i in l_part[k]]
-                l_part[k] = sum(float(i.replace('*', '').replace('x', ''))
-                                for i in l_part[k])
+                l_part[k] = ['1' if i == 'x' else '-1' if i == '-x' else i for i in l_part[k]]
+                l_part[k] = sum(float(i.replace('*', '').replace('x', '')) for i in l_part[k])
 
-                r_part[k] = [i.split('^')[0].lower()
-                             if '^' in i else i for i in r_part[k]]
+                r_part[k] = [i.split('^')[0].lower() if '^' in i else i for i in r_part[k]]
                 r_part[k] = [i.lower().replace('+', '') for i in r_part[k]]
-                r_part[k] = ['1' if i == 'x' else '-1' if i ==
-                             '-x' else i for i in r_part[k]]
-                r_part[k] = sum(float(i.replace('*', '').replace('x', ''))
-                                for i in r_part[k])
+                r_part[k] = ['1' if i == 'x' else '-1' if i == '-x' else i for i in r_part[k]]
+                r_part[k] = sum(float(i.replace('*', '').replace('x', '')) for i in r_part[k])
 
         try:
             clear_vars(left_dict, right_dict)
         except ValueError:
             sys.exit(self.ERR_DICT[5])
         equal_sides = left_dict == right_dict
-        if equal_sides and 'x' not in self.cin.lower():
+        if equal_sides and 'x' not in self.cut_input.lower():
             sys.exit(self.ERR_DICT[6])
-        elif 'x' not in self.cin.lower():
+        elif 'x' not in self.cut_input.lower():
             sys.exit(self.ERR_DICT[7])
         elif equal_sides:
             sys.exit(self.ERR_DICT[8])
@@ -113,19 +106,19 @@ class Calc:
                 for key in set(left_dict) | set(right_dict)}
 
     def check_errors(self) -> None:
-        if self.cin.count('=') != 1:
+        if self.cut_input.count('=') != 1:
             sys.exit(self.ERR_DICT[1])
-        elif not all(self.cin.split('=')):
+        elif not all(self.cut_input.split('=')):
             sys.exit(self.ERR_DICT[2])
-        elif re.findall(self.REG_FLT_EXP, self.cin):
+        elif re.findall(self.REG_FLT_EXP, self.cut_input):
             sys.exit(self.ERR_DICT[3])
-        elif re.findall(self.REG_NEG_EXP, self.cin):
+        elif re.findall(self.REG_NEG_EXP, self.cut_input):
             sys.exit(self.ERR_DICT[4])
-        elif re.findall(self.REG_WRG_INP, self.cin):
+        elif re.findall(self.REG_WRG_INP, self.cut_input):
             sys.exit(self.ERR_DICT[5])
-        elif re.findall(self.REG_AFTER_X, self.cin):
+        elif re.findall(self.REG_AFTER_X, self.cut_input):
             sys.exit(self.ERR_DICT[5])
-        elif re.findall(r'\^[\D]', self.cin):
+        elif re.findall(r'\^\D', self.cut_input):
             sys.exit(self.ERR_DICT[5])
-        elif 'xx' in self.cin.lower():
+        elif 'xx' in self.cut_input.lower():
             sys.exit(self.ERR_DICT[5])

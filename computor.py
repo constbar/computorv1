@@ -1,26 +1,21 @@
 #!/usr/bin/python3
 
-import sys
 import argparse
+import sys
+
 from calculation import Calc
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='computorv1 - solves quadratic equation')
-    parser.add_argument('equation',
-                        type=str,
-                        metavar='',
+    parser.add_argument('equation', type=str,
                         help='polynom to process')
     parser.add_argument('-p', '--prec',
-                        type=int,
-                        metavar='',
-                        required=False,
+                        type=int, required=False,
                         help='set the accuracy of the solution')
-    parser.add_argument('-f', '--frac',
-                        action='store_true',
+    parser.add_argument('-f', '--frac', action='store_true',
                         help='show irreducible fraction')
-    parser.add_argument('-v', '--verb',
-                        action='store_true',
+    parser.add_argument('-v', '--verb', action='store_true',
                         help='show detail operations')
     args = parser.parse_args()
 
