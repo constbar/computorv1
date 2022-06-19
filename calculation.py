@@ -32,7 +32,7 @@ class Calc:
     def __init__(self, equation: str, prec: int, frac: bool = False, verb: bool = False):
         self.orig = equation
         self.check_errors()
-        self.eq = Eq(self.sort_variables, prec, frac, verb)
+        self.eq = Eq(self.sort_variables(), prec, frac, verb)
 
     @property
     def cut_input(self) -> str:
@@ -40,7 +40,6 @@ class Calc:
         cut_inp = cut_inp.replace('\t', '').replace(' ', '')
         return cut_inp
 
-    @property
     def sort_variables(self) -> dict:
         """
         1. distribution of all raw data by powers

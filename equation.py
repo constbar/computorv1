@@ -12,12 +12,11 @@ class Eq:
         self.disc = None
         self.results = list()
         if len(self.data) > 3:
-            if self.check_high_poly:
+            if self.check_high_poly():
                 self.print_final_result()
         self.make_calculations()
         self.print_final_result()
 
-    @property
     def check_high_poly(self) -> bool:
         h_vals = list(filter(lambda i: i > 2, self.data.keys()))
         for v in h_vals:
@@ -26,7 +25,7 @@ class Eq:
         return False
 
     @property
-    def try_int_data(self) -> dict:
+    def int_data(self) -> dict:
         return {k: Eq.try_int(v) for k, v in self.data.items()}
 
     @property
@@ -61,21 +60,21 @@ class Eq:
         elif self.poly_degree == 1 and self.verb:
             print('linear formula: b*x + c = 0')
             print('in our equation:',
-                  colored(f'b = {self.try_int_data[1]}; '
-                          f'c = {self.try_int_data[0]}', 'green'))
+                  colored(f'b = {self.int_data[1]}; '
+                          f'c = {self.int_data[0]}', 'green'))
         elif self.poly_degree == 2:
             if self.verb:
                 print('quadratic equation formula: a*x² + b*x + c = 0')
                 print('in our equation: ',
-                      colored(f'a = {self.try_int_data[2]}; '
-                              f'b = {self.try_int_data[1]}; '
-                              f'c = {self.try_int_data[0]}', 'green'))
+                      colored(f'a = {self.int_data[2]}; '
+                              f'b = {self.int_data[1]}; '
+                              f'c = {self.int_data[0]}', 'green'))
 
                 print('discriminant formula: d = b² - 4*a*c')
                 print('in our equation: ',
-                      colored(f'd = ({self.try_int_data[1]})² - '
-                              f'4*{self.try_int_data[2]}*'
-                              f'{self.try_int_data[0]}', 'green'))
+                      colored(f'd = ({self.int_data[1]})² - '
+                              f'4*{self.int_data[2]}*'
+                              f'{self.int_data[0]}', 'green'))
                 print('discriminant:',
                       colored(f'{Eq.try_int(self.disc)}', 'green'))
 
@@ -84,14 +83,14 @@ class Eq:
             elif self.disc > 0 and self.verb:
                 print('solutions formula: (-b ± √d) / (2*a)')
                 print('in our equation: ',
-                      colored(f'(-({self.try_int_data[1]}) ± '
+                      colored(f'(-({self.int_data[1]}) ± '
                               f'√{Eq.try_int(self.disc)}) / '
-                              f'(2*{self.try_int_data[2]})', 'green'))
+                              f'(2*{self.int_data[2]})', 'green'))
             elif self.disc == 0 and self.verb:
                 print('solutions formula: (-b) / (2*a)')
                 print('in our equation: ',
-                      colored(f'(-({self.try_int_data[1]}) / '
-                              f'(2*{self.try_int_data[2]})', 'green'))
+                      colored(f'(-({self.int_data[1]}) / '
+                              f'(2*{self.int_data[2]})', 'green'))
 
         if self.disc is not None and self.disc != 0:
             print('discriminant is strictly positive, the two solutions are:')
