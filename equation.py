@@ -52,7 +52,7 @@ class Eq:
         print('reduced form:', colored(red_form, 'green'))
         print('polynomial degree:', colored(f'{self.poly_degree}', 'green'))
 
-        if self.check_high_poly:
+        if self.check_high_poly():
             sys.exit(f'the polynomial degree is strictly'
                      f' greater than 2. couldn\'t be solved')
         elif self.poly_degree == 0:
